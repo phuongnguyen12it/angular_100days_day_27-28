@@ -1,3 +1,4 @@
+import { ArticleService } from './../../services/article.services';
 import { Article } from './../../models/article';
 import { Component, OnInit } from "@angular/core";
 import { Observable, of } from "rxjs";
@@ -9,7 +10,7 @@ import { Observable, of } from "rxjs";
     <ul>
         <li *ngFor="let article of articles | async" style="border: 1px solid black; padding: 20px; margin-bottom:10px;">
             {{article.title}}<br>
-            {{article.body}}
+            <a [routerLink]="['/detail', article.slug]">Read more</a>
         </li>
     </ul>
     <router-outlet></router-outlet>
@@ -21,13 +22,10 @@ import { Observable, of } from "rxjs";
 
 export class HomeComponent implements OnInit{
     articles: Observable<Article[]>;
-    constructor(){
-        this.articles = of<Article[]>([])
+    constructor(private readonly articleService: ArticleService){
+        this.articles = this.articleService.article$;
     }
     ngOnInit(): void {
-        this.articles = of<Article[]>([
-            {title: 'Title 1', body: 'lorem:10', slug:'title-1'},
-            {title: 'Title 2', body: 'lorem:10', slug:'title-2'}
-        ])
+        this.articles = this.articleService.article$;
     }
 }
